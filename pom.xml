@@ -7,11 +7,15 @@
   <version>1.0-SNAPSHOT</version>
   <name>hazelcast-jet-ml</name>
   <url>http://maven.apache.org</url>
+  <properties>
+	    <maven.compiler.target>1.8</maven.compiler.target>
+	    <maven.compiler.source>1.8</maven.compiler.source>
+  </properties>
   <dependencies>
 	<dependency>
 		<groupId>junit</groupId>
 		<artifactId>junit</artifactId>
-		<version>3.8.1</version>
+		<version>4.12</version>
 		<scope>test</scope>
 	</dependency>
 	<dependency>
@@ -20,4 +24,23 @@
 	    <version>0.4</version>
 	</dependency>
   </dependencies>
+  <build>
+	  <plugins>
+	    <plugin>
+	      <artifactId>maven-assembly-plugin</artifactId>
+	      <configuration>
+			<source>1.8</source>
+            <target>1.8</target>
+	        <archive>
+	          <manifest>
+	            <mainClass>org.selvinsource.hazelcast_jet_ml.JetMLDemo</mainClass>
+	          </manifest>
+	        </archive>
+	        <descriptorRefs>
+	          <descriptorRef>jar-with-dependencies</descriptorRef>
+	        </descriptorRefs>
+	      </configuration>
+	    </plugin>
+	  </plugins>
+  </build>
 </project>

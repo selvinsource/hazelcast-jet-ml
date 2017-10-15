@@ -8,7 +8,7 @@ Use JetMLDemo as example of usage of the ML Pipeline.
 ```sh
 git clone https://github.com/selvinsource/hazelcast-jet-ml.git
 cd hazelcast-jet-ml
-mvn package
+mvn clean compile assembly:single
 ```
 
 ## Documentation
@@ -20,7 +20,7 @@ The following datasets have been used:
 
 ## K-Means Clustering
 ```sh
-java -cp target/hazelcast-jet-ml-1.0-SNAPSHOT.jar org.selvinsource.hazelcast_jet_ml.JetMLDemo KMeans
+java -jar target/hazelcast-jet-ml-1.0-SNAPSHOT-jar-with-dependencies.jar KMeans
 ```
 
-[Iris]:https://github.com/selvinsource/hazelcast-jet-ml/blob/master/src/main/resources/datasets/iris_kmeans.md
+[Iris]:https://github.com/selvinsource/hazelcast-jet-ml/blob/master/src/main/resources/datasets/iris.csv

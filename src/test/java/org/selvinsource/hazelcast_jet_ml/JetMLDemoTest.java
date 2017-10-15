@@ -1,38 +1,16 @@
 package org.selvinsource.hazelcast_jet_ml;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.Assert.*;
 
-/**
- * Unit test for simple App.
- */
+import org.junit.Test;
+
 public class JetMLDemoTest 
-    extends TestCase
 {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public JetMLDemoTest( String testName )
-    {
-        super( testName );
-    }
-
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( JetMLDemoTest.class );
-    }
-
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
+	
+	@Test
+    public void testJetMLDemo()
     {
         assertTrue( true );
     }
+    
 }
