@@ -9,6 +9,8 @@ import com.hazelcast.jet.stream.IStreamList;
 
 public class KMeans implements Estimator<String,Integer>{
 
+	//default constructor setting k=2 and maxIter=20
+	
 	@Override
 	public Transformer<String,Integer> fit(IStreamList<Map<String, Integer>> dataset) {
 		// TODO run algorithm and set model centroids

@@ -14,7 +14,7 @@ mvn clean compile assembly:single
 ## Documentation
 The Jet ML Pipeline allows to chain Estimators and Transformers.
 
-* The Estimator is an algorithm that returns Transformer given a dataset (IStreamList<Map<K,V>>) to fit
+* The Estimator is an algorithm that returns a Transformer given a dataset (IStreamList<Map<K,V>>) to fit
 * The Transformer is an ML model that transforms one dataset (IStreamList<Map<K,V>>) into another
 
 Inspired by scikit-learn, see [paper].
