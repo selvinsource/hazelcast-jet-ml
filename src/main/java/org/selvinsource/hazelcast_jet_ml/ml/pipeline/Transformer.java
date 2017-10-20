@@ -1,15 +1,12 @@
 package org.selvinsource.hazelcast_jet_ml.ml.pipeline;
 
-import java.util.Map;
-
-import com.hazelcast.jet.stream.IStreamList;
+import java.util.List;
 
 /**
- * Transform one dataset into another
- * the dataset (a table) is represented by a distributed IList where each row is a map of column name and value
+ * Transform an input dataset into an output dataset (for example by adding an additional prediction attribute)
  */
-public interface Transformer<K,V> {
+public interface Transformer<T> {
 
-	IStreamList<Map<K,V>> transform(IStreamList<Map<K,V>> dataset);
+	List<T> transform(List<T> dataset);
 	
 }

@@ -1,17 +1,37 @@
 package org.selvinsource.hazelcast_jet_ml.ml.clustering;
 
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.selvinsource.hazelcast_jet_ml.ml.pipeline.Transformer;
 
-import com.hazelcast.jet.stream.IStreamList;
+public class KMeansModel implements Transformer<double[]>{
 
-public class KMeansModel implements Transformer<String,Integer>{
-
+	private List<double[]> centroids;
+	
+	/**
+	 * Cluster centers
+	 * @param centroids
+	 */
+	public KMeansModel(List<double[]> centroids){
+		this.centroids = centroids;
+	}
+	
 	@Override
-	public IStreamList<Map<String, Integer>> transform(IStreamList<Map<String, Integer>> dataset) {
-		// TODO Add assigned cluster to the row (map)
-		return dataset;
+	public List<double[]> transform(List<double[]> dataset) {
+		if(dataset.size()==0)
+			throw new RuntimeException("Dataset to transform cannot be empty for KMeansModel.");
+		
+		return dataset.stream().map(i -> {
+			double[] t = Arrays.copyOf(i, i.length + 1);
+		    t[i.length] = KMeans.findClosestCentroid(i, centroids);
+		    return t;
+		}).collect(Collectors.toList());
+	}
+
+	public List<double[]> getCentroids() {
+		return centroids;
 	}
 
 }

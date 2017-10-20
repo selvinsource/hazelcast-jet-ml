@@ -1,14 +1,12 @@
 package org.selvinsource.hazelcast_jet_ml.ml.pipeline;
 
-import java.util.Map;
-
-import com.hazelcast.jet.stream.IStreamList;
+import java.util.List;
 
 /**
- * An algorithm to fit a dataset into a Transformer
+ * An algorithm to fit an input dataset into a Transformer (for example a model)
  */
-public interface Estimator<K,V> {
+public interface Estimator<T> {
 
-	Transformer<K,V> fit(IStreamList<Map<K,V>> dataset);
+	Transformer<T> fit(List<T> dataset);
 	
 }

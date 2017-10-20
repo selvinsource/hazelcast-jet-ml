@@ -1,6 +1,6 @@
 ## Hazelcast JET ML
 
-Work in Progress: collection of machine learning algorithms using the distributed computing platform Hazelcast JET.
+Machine learning algorithms using the distributed computing platform Hazelcast JET.
 
 Use JetMLDemo as example of usage of the Jet ML Pipeline.
 
