@@ -104,7 +104,8 @@ public class KMeans implements Estimator<double[]>{
 		LOGGER.info("Clusters:");
 		newCentroids.forEach(
 			c -> {
-				Arrays.setAll(c, i -> c[i] / newCentroidsSizes[index.getAndIncrement()]);
+				int currentIndex = index.getAndIncrement();
+				Arrays.setAll(c, i -> c[i] / newCentroidsSizes[currentIndex]);
 				LOGGER.info(Arrays.toString(c));
 			}
 		);
