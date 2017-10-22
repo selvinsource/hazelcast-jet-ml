@@ -24,21 +24,23 @@ Inspired by scikit-learn, see [paper].
 The following datasets have been used:
 * [Iris]
 
-## K-Means Clustering Example
+## K-Means Clustering Examples
 Train a model and show identified clusters 
 ```java
 // Create two Jet members
 JetInstance instance1 = Jet.newJetInstance();
 Jet.newJetInstance();
 
-// Get distributed train dataset (it is assumed this is already populated, e.g. from a file)
+// Get a distributed training dataset (it is assumed this is already populated, e.g. from a file)
 IStreamList<double[]> trainDataset = instance1.getList("trainDataset"); 
 
-// Train model using the dataset
+// Train a model using the train dataset, k = 3, maxIter = 20
+// k = 3 the number of desired clusters
+// maxIter = 20 maximum number of iteration if not converging
 KMeans kMeans = new KMeans(3, 20);
 KMeansModel model = kMeans.fit(trainDataset);
 
-// Show identified centroids
+// Show the identified centroids
 LOGGER.info("Centroids:");
 model.getCentroids().stream().forEach(c -> LOGGER.info(Arrays.toString(c)));
 
@@ -51,14 +53,14 @@ Train a model and predict test data using Jet ML Pipeline
 JetInstance instance1 = Jet.newJetInstance();
 Jet.newJetInstance();
  
-// Get distributed datasets to train the model and then test it
+// Get a distributed datasets to train the model and then test it
 IStreamList<double[]> trainDataset = instance1.getList("trainDataset"); 
 IStreamList<double[]> testDataset = instance1.getList("testDataset"); 
 
 // Create a KMeans estimator
 Estimator<double[]> estimator = new KMeans(3, 20);
 
-// Hazelcast Get ML Pipeline: given train data the estimator (KMeans) returns a transformer (KMeanModel) which assign clusters to test data
+// Hazelcast Get ML Pipeline: given a train dataset the estimator (KMeans) returns a transformer (KMeanModel) which assigns clusters to test dataset instances
 IStreamList<double[]> outputDataset = estimator.fit(trainDataset).transform(testDataset);
 
 Jet.shutdownAll();
