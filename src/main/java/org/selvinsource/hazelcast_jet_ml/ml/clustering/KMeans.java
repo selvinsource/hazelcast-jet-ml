@@ -13,8 +13,15 @@ import org.selvinsource.hazelcast_jet_ml.ml.pipeline.Estimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hazelcast.jet.stream.IStreamList;
+
 public class KMeans implements Estimator<double[]>{
 	
+	/**
+	 * Version 1
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(KMeans.class);
 
 	private int k = 2;
@@ -22,8 +29,8 @@ public class KMeans implements Estimator<double[]>{
 	private List<double[]> initialCentroids;
 	
 	/**
-	 * Clustering is the task of identifying and segmenting the instances into a finite number (k) of categories (clusters) which are not predefined (unlike classification).
-	 * K-Means is the classic clustering technique that partitions the instances into k clusters whereas k is predefined. 
+	 * Clustering is the task of identifying and segmenting the instances into a finite number (k) of categories (clusters) which are not predefined (unlike classification)
+	 * K-Means is the classic clustering technique that partitions the instances into k clusters whereas k is predefined
 	 * k = 2 the number of desired clusters
 	 * maxIter = 20 maximum number of iteration if not converging before the max
 	 */
@@ -31,8 +38,8 @@ public class KMeans implements Estimator<double[]>{
 	}	
 	
 	/**
-	 * Clustering is the task of identifying and segmenting the instances into a finite number (k) of categories (clusters) which are not predefined (unlike classification).
-	 * K-Means is the classic clustering technique that partitions the instances into k clusters whereas k is predefined. 
+	 * Clustering is the task of identifying and segmenting the instances into a finite number (k) of categories (clusters) which are not predefined (unlike classification)
+	 * K-Means is the classic clustering technique that partitions the instances into k clusters whereas k is predefined
 	 * @param k the number of desired clusters
 	 * @param maxIter maximum number of iteration if not converging before the max
 	 */
@@ -42,8 +49,8 @@ public class KMeans implements Estimator<double[]>{
 	}
 	
 	/**
-	 * Clustering is the task of identifying and segmenting the instances into a finite number (k) of categories (clusters) which are not predefined (unlike classification).
-	 * K-Means is the classic clustering technique that partitions the instances into k clusters whereas k is predefined. 
+	 * Clustering is the task of identifying and segmenting the instances into a finite number (k) of categories (clusters) which are not predefined (unlike classification)
+	 * K-Means is the classic clustering technique that partitions the instances into k clusters whereas k is predefined
 	 * @param k the number of desired clusters
 	 * @param maxIter maximum number of iteration if not converging before the max
 	 * @param initialCentroids provide initial centroids to start with in case the random selection is not ideal (results are sensitive to initialization)
@@ -55,7 +62,7 @@ public class KMeans implements Estimator<double[]>{
 	}	
 	
 	@Override
-	public KMeansModel fit(List<double[]> dataset) {
+	public KMeansModel fit(IStreamList<double[]> dataset) {
 		if(dataset.size()==0)
 			throw new RuntimeException("Input dataset cannot be empty for KMeans clusting algorithm.");
 		

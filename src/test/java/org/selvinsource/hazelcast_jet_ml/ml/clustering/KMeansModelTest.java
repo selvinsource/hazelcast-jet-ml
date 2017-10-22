@@ -7,43 +7,62 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.selvinsource.hazelcast_jet_ml.ml.pipeline.Transformer;
+
+import com.hazelcast.jet.Jet;
+import com.hazelcast.jet.JetInstance;
+import com.hazelcast.jet.stream.IStreamList;
 
 public class KMeansModelTest {
 	
-	List<double[]> inputDataset1;
+	JetInstance instance1 = Jet.newJetInstance();
+	IStreamList<double[]> inputDataset1;
+	List<double[]> centroids1;
 	
 	@Before
 	public void setup(){
-		inputDataset1 = new ArrayList<double[]>();
+		inputDataset1 = instance1.getList("inputDataset1");
 		inputDataset1.add(new double[] {5});
 		inputDataset1.add(new double[] {25});
+		centroids1 = new ArrayList<double[]>();
+		centroids1.add(new double[] {10});
+		centroids1.add(new double[] {20});	
 	}	
 	
 	@Test
-    public void testTransformPrediction()
+    public void testTransformPredictionAsDistributedIList()
     {
 		// Arrange
-		List<double[]> centroids = new ArrayList<double[]>();
-		centroids.add(new double[] {10});
-		centroids.add(new double[] {20});		
-		KMeansModel model = new KMeansModel(centroids);
+		KMeansModel model = new KMeansModel(centroids1);
 
 		// Act
 		List<double[]> outputDataset1 = model.transform(inputDataset1);
 								
 		// Assert
-		// Check output predictions (first instance assigned to first cluster, second instance assigend to second cluster)
+		// Check output predictions (first instance assigned to first cluster, second instance assigned to second cluster)
         assertTrue( outputDataset1.get(0)[1] == 0);
         assertTrue( outputDataset1.get(1)[1] == 1);
+        // Check the transform generates a distributed Hazelcast IList called kMeansOutputDataset
+        List<double[]> kMeansOutputDataset = instance1.getList("kMeansOutputDataset");
+        assertTrue( kMeansOutputDataset.size() == 2);
     }		
 	
 	@Test(expected = RuntimeException.class)
-	public void testTransformRuntimeException(){
+	public void testTransformRuntimeExceptionNoCentroids(){
 		// Arrange
-		KMeansModel model = new KMeansModel(new ArrayList<double[]>());
+		Transformer<double[]> model = new KMeansModel(new ArrayList<double[]>());
 		
 		// Act
-		model.transform(new ArrayList<double[]>());
+		model.transform(inputDataset1);
 	}	
+	
+	@Test(expected = RuntimeException.class)
+	public void testTransformRuntimeExceptionEmptyInput(){
+		// Arrange
+		Transformer<double[]> model = new KMeansModel(centroids1);
+		
+		// Act
+		model.transform(instance1.getList("emptyDataset1"));
+	}
 
 }

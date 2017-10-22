@@ -2,12 +2,19 @@ package org.selvinsource.hazelcast_jet_ml.ml.clustering;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.selvinsource.hazelcast_jet_ml.ml.pipeline.Transformer;
 
+import com.hazelcast.jet.stream.DistributedCollectors;
+import com.hazelcast.jet.stream.IStreamList;
+
 public class KMeansModel implements Transformer<double[]>{
 
+	/**
+	 * Version 1
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private List<double[]> centroids;
 	
 	/**
@@ -18,8 +25,13 @@ public class KMeansModel implements Transformer<double[]>{
 		this.centroids = centroids;
 	}
 	
+	/**
+	 * It creates and returns a distributed Hazelcast IList called kMeansOutputDataset by adding the predicted cluster as additional attribute to the input dataset
+	 */
 	@Override
-	public List<double[]> transform(List<double[]> dataset) {
+	public IStreamList<double[]> transform(IStreamList<double[]> dataset) {
+		if(centroids.size()==0)
+			throw new RuntimeException("Centroids cannot be empty for KMeansModel.");
 		if(dataset.size()==0)
 			throw new RuntimeException("Dataset to transform cannot be empty for KMeansModel.");
 		
@@ -27,7 +39,7 @@ public class KMeansModel implements Transformer<double[]>{
 			double[] t = Arrays.copyOf(i, i.length + 1);
 		    t[i.length] = KMeans.findClosestCentroid(i, centroids);
 		    return t;
-		}).collect(Collectors.toList());
+		}).collect(DistributedCollectors.toIList("kMeansOutputDataset"));
 	}
 
 	public List<double[]> getCentroids() {

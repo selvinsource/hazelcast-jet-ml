@@ -8,13 +8,18 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.hazelcast.jet.Jet;
+import com.hazelcast.jet.JetInstance;
+import com.hazelcast.jet.stream.IStreamList;
+
 public class KMeansTest {
 	
-	List<double[]> inputDataset1;
+	JetInstance jetInstance1 = Jet.newJetInstance();
+	IStreamList<double[]> inputDataset1;
 	
 	@Before
 	public void setup(){
-		inputDataset1 = new ArrayList<double[]>();
+		inputDataset1 = jetInstance1.getList("inputDataset1");
 		inputDataset1.add(new double[] {15});
 		inputDataset1.add(new double[] {15});
 		inputDataset1.add(new double[] {16});
@@ -136,7 +141,7 @@ public class KMeansTest {
 		KMeans kMeans = new KMeans();
 		
 		// Act
-		kMeans.fit(new ArrayList<double[]>());
+		kMeans.fit(jetInstance1.getList("emptyDataset1"));
 	}
 	
 }
