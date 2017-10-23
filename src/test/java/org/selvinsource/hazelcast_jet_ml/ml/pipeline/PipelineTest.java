@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.selvinsource.hazelcast_jet_ml.ml.clustering.KMeans;
@@ -15,12 +16,13 @@ import com.hazelcast.jet.stream.IStreamList;
 
 public class PipelineTest {
 	
-	JetInstance instance1 = Jet.newJetInstance();
+	JetInstance instance1;
 	IStreamList<double[]> trainDataset;
 	IStreamList<double[]> testDataset;
 	
 	@Before
 	public void setup(){
+		instance1 = Jet.newJetInstance();
 		trainDataset = instance1.getList("trainDataset");
 		trainDataset.add(new double[] {15});
 		trainDataset.add(new double[] {15});
@@ -69,5 +71,10 @@ public class PipelineTest {
         List<double[]> kMeansOutputDataset = instance1.getList("kMeansOutputDataset");
         assertTrue( kMeansOutputDataset.size() == 2);
     }
+	
+	@After
+	public void close(){
+		instance1.shutdown();
+	}
 
 }

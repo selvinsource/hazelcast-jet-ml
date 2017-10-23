@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,11 +15,12 @@ import com.hazelcast.jet.stream.IStreamList;
 
 public class KMeansTest {
 	
-	JetInstance jetInstance1 = Jet.newJetInstance();
+	JetInstance jetInstance1;
 	IStreamList<double[]> inputDataset1;
 	
 	@Before
 	public void setup(){
+		jetInstance1 = Jet.newJetInstance();
 		inputDataset1 = jetInstance1.getList("inputDataset1");
 		inputDataset1.add(new double[] {15});
 		inputDataset1.add(new double[] {15});
@@ -143,5 +145,10 @@ public class KMeansTest {
 		// Act
 		kMeans.fit(jetInstance1.getList("emptyDataset1"));
 	}
+	
+	@After
+	public void close(){
+		jetInstance1.shutdown();
+	}	
 	
 }

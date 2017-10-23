@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.selvinsource.hazelcast_jet_ml.ml.pipeline.Transformer;
@@ -15,12 +16,13 @@ import com.hazelcast.jet.stream.IStreamList;
 
 public class KMeansModelTest {
 	
-	JetInstance instance1 = Jet.newJetInstance();
+	JetInstance instance1;
 	IStreamList<double[]> inputDataset1;
 	List<double[]> centroids1;
 	
 	@Before
 	public void setup(){
+		instance1 = Jet.newJetInstance();
 		inputDataset1 = instance1.getList("inputDataset1");
 		inputDataset1.add(new double[] {5});
 		inputDataset1.add(new double[] {25});
@@ -64,5 +66,10 @@ public class KMeansModelTest {
 		// Act
 		model.transform(instance1.getList("emptyDataset1"));
 	}
+	
+	@After
+	public void close(){
+		instance1.shutdown();
+	}	
 
 }
