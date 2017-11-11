@@ -53,7 +53,7 @@ Train a model and predict test data using Jet ML Pipeline
 JetInstance instance1 = Jet.newJetInstance();
 Jet.newJetInstance();
  
-// Get a distributed datasets to train the model and then test it
+// Get distributed datasets to train the model and then test it
 IStreamList<double[]> trainDataset = instance1.getList("trainDataset"); 
 IStreamList<double[]> testDataset = instance1.getList("testDataset"); 
 
@@ -70,7 +70,7 @@ Jet.shutdownAll();
 ```sh
 java -jar target/hazelcast-jet-ml-1.0-SNAPSHOT-jar-with-dependencies.jar KMeans
 ```
-See [full code].
+See demo [full code].
 
 [Iris]:https://github.com/selvinsource/hazelcast-jet-ml/blob/master/src/main/resources/datasets/iris.csv
 [paper]:https://arxiv.org/abs/1309.0238
