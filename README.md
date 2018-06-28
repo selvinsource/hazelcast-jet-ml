@@ -16,7 +16,7 @@ The Jet ML Pipeline allows to chain Estimators and Transformers.
 
 * The Estimator is an algorithm that returns a Transformer given a dataset to fit
 * The Transformer is an ML model that transforms one dataset into another
-* A dataset is represented by a distributed Hazelcast IStreamList<T>
+* A dataset is represented by n Hazelcast IListJet (which is not distributed, in a future version this will be converted to a distributed IMapJet)
 
 Inspired by scikit-learn, see [paper].
 
@@ -31,8 +31,8 @@ Train a model and show identified clusters
 JetInstance instance1 = Jet.newJetInstance();
 Jet.newJetInstance();
 
-// Get a distributed training dataset (it is assumed this is already populated, e.g. from a file)
-IStreamList<double[]> trainDataset = instance1.getList("trainDataset"); 
+// Get a training dataset (it is assumed this is already populated, e.g. from a file)
+IListJet<double[]> trainDataset = instance1.getList("trainDataset");
 
 // Train a model using the train dataset, k = 3, maxIter = 20
 // k = 3 the number of desired clusters
@@ -53,15 +53,15 @@ Train a model and predict test data using Jet ML Pipeline
 JetInstance instance1 = Jet.newJetInstance();
 Jet.newJetInstance();
  
-// Get distributed datasets to train the model and then test it
-IStreamList<double[]> trainDataset = instance1.getList("trainDataset"); 
-IStreamList<double[]> testDataset = instance1.getList("testDataset"); 
+// Get datasets to train the model and then test it
+IListJet<double[]> trainDataset = instance1.getList("trainDataset");
+IListJet<double[]> testDataset = instance1.getList("testDataset");
 
 // Create a KMeans estimator
 Estimator<double[]> estimator = new KMeans(3, 20);
 
 // Hazelcast Get ML Pipeline: given a train dataset the estimator (KMeans) returns a transformer (KMeanModel) which assigns clusters to test dataset instances
-IStreamList<double[]> outputDataset = estimator.fit(trainDataset).transform(testDataset);
+IListJet<double[]> outputDataset = estimator.fit(trainDataset).transform(testDataset);
 
 Jet.shutdownAll();
 ```
