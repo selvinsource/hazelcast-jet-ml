@@ -4,7 +4,7 @@
   <groupId>org.selvinsource.hazelcast_jet_ml</groupId>
   <artifactId>hazelcast-jet-ml</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.6.1</version>
   <name>hazelcast-jet-ml</name>
   <url>http://maven.apache.org</url>
   <properties>
