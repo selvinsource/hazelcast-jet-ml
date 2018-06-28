@@ -68,7 +68,7 @@ Jet.shutdownAll();
 
 ## K-Means Clustering Demo
 ```sh
-java -jar target/hazelcast-jet-ml-1.0-SNAPSHOT-jar-with-dependencies.jar KMeans
+java -jar target/hazelcast-jet-ml-0.6.1-jar-with-dependencies.jar KMeans
 ```
 See demo [full code].
 
