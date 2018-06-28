@@ -1,19 +1,15 @@
 package org.selvinsource.hazelcast_jet_ml.ml.clustering;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
+import com.hazelcast.core.IList;
+import com.hazelcast.jet.IListJet;
+import com.hazelcast.jet.stream.DistributedStream;
 import org.selvinsource.hazelcast_jet_ml.ml.pipeline.Estimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hazelcast.jet.stream.IStreamList;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class KMeans implements Estimator<double[]>{
 	
@@ -62,7 +58,7 @@ public class KMeans implements Estimator<double[]>{
 	}	
 	
 	@Override
-	public KMeansModel fit(IStreamList<double[]> dataset) {
+	public KMeansModel fit(IListJet<double[]> dataset) {
 		if(dataset.size()==0)
 			throw new RuntimeException("Input dataset cannot be empty for KMeans clusting algorithm.");
 		
@@ -79,8 +75,8 @@ public class KMeans implements Estimator<double[]>{
 		return new KMeansModel(newCentroids);
 	}
 	
-	private static List<double[]> selectRandomCentroids(int k, List<double[]> dataset){
-			Random r = new Random();
+	private static List<double[]> selectRandomCentroids(int k, IListJet<double[]> dataset){
+		Random r = new Random();
 		// Select k points at random as cluster centroids, however if the input dataset size is less than the desired clusters, use the input size		
 		Set<Integer> randomIndexes = new HashSet<>();
 		while(randomIndexes.size() < Math.min(k, dataset.size())){
@@ -89,7 +85,7 @@ public class KMeans implements Estimator<double[]>{
 		return randomIndexes.stream().map(dataset::get).collect(Collectors.toList());
 	}
 	
-	private static List<double[]> runKMeansAlgorithm(List<double[]> dataset, List<double[]> centroids){
+	private static List<double[]> runKMeansAlgorithm(IListJet<double[]> dataset, List<double[]> centroids){
 		// Get number of attributes from the first input dataset instance
 		int inputSize = dataset.get(0).length;		
 		// Create a list of new centroids initialized to zeros
@@ -99,7 +95,7 @@ public class KMeans implements Estimator<double[]>{
 		);
 		int[] newCentroidsSizes = new int[centroids.size()];
 		// Assign objects to their closest cluster center according to the Euclidean distance function
-		dataset.stream().forEach(
+		DistributedStream.fromList(dataset).forEach(
 			i -> {
 				int closestCentroidIndex = findClosestCentroid(i, centroids);
 				Arrays.setAll(newCentroids.get(closestCentroidIndex), el -> newCentroids.get(closestCentroidIndex)[el] + i[el]);

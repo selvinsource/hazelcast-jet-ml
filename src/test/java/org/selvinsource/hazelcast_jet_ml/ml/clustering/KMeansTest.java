@@ -1,22 +1,21 @@
 package org.selvinsource.hazelcast_jet_ml.ml.clustering;
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.hazelcast.jet.IListJet;
+import com.hazelcast.jet.Jet;
+import com.hazelcast.jet.JetInstance;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.hazelcast.jet.Jet;
-import com.hazelcast.jet.JetInstance;
-import com.hazelcast.jet.stream.IStreamList;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertTrue;
 
 public class KMeansTest {
 	
 	JetInstance jetInstance1;
-	IStreamList<double[]> inputDataset1;
+	IListJet<double[]> inputDataset1;
 	
 	@Before
 	public void setup(){

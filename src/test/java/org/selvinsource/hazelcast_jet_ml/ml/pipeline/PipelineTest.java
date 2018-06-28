@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hazelcast.jet.IListJet;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,13 +13,12 @@ import org.selvinsource.hazelcast_jet_ml.ml.clustering.KMeans;
 
 import com.hazelcast.jet.Jet;
 import com.hazelcast.jet.JetInstance;
-import com.hazelcast.jet.stream.IStreamList;
 
 public class PipelineTest {
 	
 	JetInstance instance1;
-	IStreamList<double[]> trainDataset;
-	IStreamList<double[]> testDataset;
+	IListJet<double[]> trainDataset;
+	IListJet<double[]> testDataset;
 	
 	@Before
 	public void setup(){

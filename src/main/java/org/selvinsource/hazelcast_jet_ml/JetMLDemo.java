@@ -1,6 +1,14 @@
 package org.selvinsource.hazelcast_jet_ml;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import com.hazelcast.jet.IListJet;
+import com.hazelcast.jet.Jet;
+import com.hazelcast.jet.JetInstance;
+import com.hazelcast.jet.stream.DistributedCollectors;
+import com.hazelcast.jet.stream.DistributedStream;
+import org.selvinsource.hazelcast_jet_ml.ml.clustering.KMeans;
+import org.selvinsource.hazelcast_jet_ml.ml.pipeline.Estimator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -11,15 +19,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-import org.selvinsource.hazelcast_jet_ml.ml.clustering.KMeans;
-import org.selvinsource.hazelcast_jet_ml.ml.pipeline.Estimator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.hazelcast.jet.Jet;
-import com.hazelcast.jet.JetInstance;
-import com.hazelcast.jet.stream.DistributedCollectors;
-import com.hazelcast.jet.stream.IStreamList;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class JetMLDemo 
 {
@@ -33,16 +33,16 @@ public class JetMLDemo
     public static void main( String[] args )
     {
         if(args.length != 1){
-            System.out.println("Please select an estimator: KMeans");
+			LOGGER.info("Please select an estimator: KMeans");
             return;
         }
         switch(EstimatorType.valueOf(args[0])) {
         case KMeans:
-            System.out.println(EstimatorType.KMeans + " selected");
+			LOGGER.info(EstimatorType.KMeans + " selected");
             runKMeansJetMLPipelineDemo();
             break;
         default:
-            System.out.println("Estimator selected not implemented");
+			LOGGER.info("Estimator selected not implemented");
             return;
         }
     }
@@ -53,40 +53,40 @@ public class JetMLDemo
     		JetInstance instance1 = Jet.newJetInstance();
     		Jet.newJetInstance();
     		
-    		// Ultimately read the iris.csv file into a distributed Hazelcast IStreamList<double[]>
-    		// First load the whole file including the last column (the class) which is not needed to fit the model but usefull to compare the predicted class with the real class
+    		// Ultimately read the iris.csv file into an Hazelcast IListJet<double[]> (which is not distributed)
+    		// First load the whole file including the last column (the class) which is not needed to fit the model but useful to compare the predicted class with the real class
     		// Note: skip(1) removes the header
-    		IStreamList<String[]> inputDatasetWithClass = instance1.getList("inputDatasetWithClass");
+    		IListJet<String[]> inputDatasetWithClass = instance1.getList("inputDatasetWithClass");
     		getFileContent("/datasets/iris.csv").skip(1).forEach(
     				line -> inputDatasetWithClass.add(line.split(","))
     		);
     		// Note: convert attributes into doubles, limit(attributes.length-1) removes the class column not needed for clustering as it is an unsupervised algorithm
-    		IStreamList<double[]> inputDataset = inputDatasetWithClass.stream().map(
+			IListJet<double[]> inputDataset = DistributedStream.fromList(inputDatasetWithClass).map(
     				attr -> Arrays.stream(attr).limit(attr.length-1).mapToDouble(Double::parseDouble).toArray()
     		).collect(DistributedCollectors.toIList("inputDataset"));
 
     		// Create a KMeans estimator with k = 3 (ideally it should match the known class: Iris-setosa, Iris-versicolor, Iris-virginica)
     		Estimator<double[]> estimator = new KMeans(3, 20);
-    		// Hazelcast Get ML Pipeline
+    		// Hazelcast Jet ML Pipeline
     		// Train using inputDataset and test using the same inputDataset to see if the predicted classes are comparable to the known ones
-    		IStreamList<double[]> outputDataset = estimator.fit(inputDataset).transform(inputDataset);    	
+			IListJet<double[]> outputDataset = estimator.fit(inputDataset).transform(inputDataset);
 
     		// Print results comparing predicted (last double which is 0, 1 or 2) and the known class
-    		LOGGER.info("Print output with predicted cluster and orginal known class:");
+    		LOGGER.info("Print output with predicted cluster and original known class:");
     		AtomicInteger index = new AtomicInteger();
-    		outputDataset.stream().forEach(
+			DistributedStream.fromList(outputDataset).forEach(
     				i -> LOGGER.info(Arrays.toString(i) + " known as " + inputDatasetWithClass.get(index.getAndIncrement())[4])
     		);
 
     		// Note: as the maps below are as small as the clusters (k=3), no need to use DistributedCollectors.groupingByToIMap
-    		LOGGER.info("Summary of orginal class:");
-    		Map<String, Long> summaryOriginal = inputDatasetWithClass.stream().collect(
+    		LOGGER.info("Summary of original class:");
+    		Map<String, Long> summaryOriginal = DistributedStream.fromList(inputDatasetWithClass).collect(
     				DistributedCollectors.groupingBy(i -> i[4], DistributedCollectors.counting())
     		);
     		LOGGER.info(summaryOriginal.toString());
 
     		LOGGER.info("Summary of clustered instances:");
-    		Map<Double, Long> summaryClustered = outputDataset.stream().collect(
+    		Map<Double, Long> summaryClustered = DistributedStream.fromList(outputDataset).collect(
     				DistributedCollectors.groupingBy(i -> i[4], DistributedCollectors.counting())
     		);
     		LOGGER.info(summaryClustered.toString());

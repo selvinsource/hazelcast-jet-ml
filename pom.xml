@@ -15,7 +15,7 @@
 	<dependency>
 	    <groupId>com.hazelcast.jet</groupId>
 	    <artifactId>hazelcast-jet</artifactId>
-	    <version>0.4</version>
+	    <version>0.6.1</version>
 	</dependency> 
 	<dependency>
 		<groupId>org.slf4j</groupId>
@@ -39,8 +39,6 @@
 	    <plugin>
 	      <artifactId>maven-assembly-plugin</artifactId>
 	      <configuration>
-			<source>1.8</source>
-            <target>1.8</target>
 	        <archive>
 	          <manifest>
 	            <mainClass>org.selvinsource.hazelcast_jet_ml.JetMLDemo</mainClass>
